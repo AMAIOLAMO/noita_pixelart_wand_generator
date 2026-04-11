@@ -7,10 +7,12 @@ import ciede2000 as ciede
 
 
 ## This script assumes a few things:
-## You are using CE's wiki wands to import the wands
-## you have the image file(input.png) stored in the running directory
-## The result will be printed out in console, you need to copy and import this in CE (Component Editor)
-## you need to install pillow and numpy for python (`pip install pillow numpy`) preferably in a virtual environment :P
+## 1. You are using CE(Component Explorer)'s wiki wands to import the wands (https://noita.wiki.gg/wiki/Mod:Component_Explorer)
+## 2. you have the image file(input.png) stored in the running directory
+## 3. the preview will be stored in the preview.png for faster palette checks 
+## 4. The result will be printed out in result.txt, you need to copy and import this in CE (Component Explorer)
+## 5. you need to install pillow and numpy for python (`pip install pillow numpy`) preferably in a virtual environment :P
+## 6. finally, you simply need to run: python noita_pxa.py to process everything :) have fun
 
 def clampf(v: float, a: float, b: float) -> float:
     return max(
@@ -218,12 +220,18 @@ def make_pixel_str(is_col_end: bool, color_spell_name: str) -> str:
     if is_col_end == False:
         result += "BURST_2,"
 
+    ## death cross, not a good candidate
     # result += "NOLLA,SUPER_TELEPORT_CAST,LIFETIME_DOWN,LIFETIME_DOWN,LIFETIME_DOWN,LIFETIME," + color_spell_name + ",BLOOD_MAGIC,BLOOD_MAGIC,BLOOD_MAGIC,DEATH_CROSS_BIG,SUPER_TELEPORT_CAST"
+
+    ## FIREBOMB
     result += "NOLLA,SUPER_TELEPORT_CAST,BURST_3,BLOOD_MAGIC,BLOOD_MAGIC,ZERO_DAMAGE,ZERO_DAMAGE," + color_spell_name + ",FIREBOMB,ADD_TRIGGER,CASTER_CAST,DIGGER,PURPLE_EXPLOSION_FIELD,SUPER_TELEPORT_CAST"
+    ## too laggy
+    # result += "NOLLA,SUPER_TELEPORT_CAST,BURST_3,BLOOD_MAGIC,BLOOD_MAGIC,ZERO_DAMAGE,ZERO_DAMAGE," + color_spell_name + ",FIREBOMB,TRANSMUTATION,PURPLE_EXPLOSION_FIELD,SUPER_TELEPORT_CAST"
     return result
 
 def begin_column_str() -> str:
     # return "BURST_2,BLOOD_MAGIC,BLOOD_MAGIC,NOLLA,SUPER_TELEPORT_CAST,ADD_DEATH_TRIGGER,NOLLA,GRAVITY,DEATH_CROSS"
+    ## FIREBOMB
     return "BURST_2,BLOOD_MAGIC,BLOOD_MAGIC,NOLLA,SUPER_TELEPORT_CAST,ADD_DEATH_TRIGGER,NOLLA,GRAVITY,DIGGER"
 
 print("Reading image")
@@ -279,7 +287,7 @@ print("Render Complete")
 print("Creating preview...")
 preview_pixels_array = np.array(preview_pixels, dtype=np.uint8)
 preview_img = Image.fromarray(preview_pixels_array)
-preview_img = preview_img.rotate(-90).transpose(Image.FLIP_LEFT_RIGHT)
+preview_img = preview_img.transpose(Image.TRANSPOSE)
 preview_img.save('preview.png')
 print("Preview complete...")
 
