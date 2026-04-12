@@ -1,0 +1,9 @@
+[
+    [ [ 0, 0, 0       ], "COLOUR_INVIS"                                       ],
+    [ [ 255, 40, 19   ], "COLOUR_RED"                                         ],
+    [ [ 255, 97, 37   ], "COLOUR_ORANGE"                                      ],
+    [ [ 255, 173, 16  ], "COLOUR_YELLOW"                                      ],
+    [ [ 151, 255, 71  ], "COLOUR_GREEN"                                       ],
+    [ [ 55, 195, 255  ], "COLOUR_BLUE"                                        ],
+    [ [ 126, 67, 255  ], "COLOUR_PURPLE"                                      ]
+]

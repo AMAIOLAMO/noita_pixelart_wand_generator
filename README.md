@@ -112,6 +112,9 @@ This is how mina's preview looks like with the `firebomb_tinted_plt_exp.json` (f
 To import the wand format, open `result.txt` and copy everything within there into your clipboard, run Noita (of course), go to
 Component Explorer's options
 
+WARNING: MAKE SURE YOUR INVENTORY IS NOT OPENED, or else YOU WILL CRASH BECAUSE noita's UI cannot handle
+that many slots :P
+
 
 - Open "Wiki Wands"
 
