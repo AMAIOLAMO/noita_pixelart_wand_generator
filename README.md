@@ -138,9 +138,20 @@ Here is the gif render(in reality it's a lil bit laggy...)
 ![Firebomb pixelart mina gif](readme_vendor/firebomb_pixelart_mina_render.gif)
 
 
+**Tips for better viewing experience**
+
+1. currently I have modded `FIREBOMB` projectile to be tinted white (I will probably post this somewhere), this makes the colors
+more accurate.
+
+2. You can change the in game settings, turn ***brightness*** and ***contrast*** all the way down.
+Then turn ***gamma*** all the way up before you fire your pixelart :). This should make colors much better looking.
+
+![Settings change](readme_vendor/settings_change.png)
+
 **Reducing lag**
-The biggest lag factor actually is not the wand art, but the wand you have on your hand!
-Noita renders a TON of pixels on your wand because of the amount of pixel glimmers and spells you have.
+
+The biggest lag factor is actually not the wand art rendering itself, but the wand you have on your hand!
+Noita renders a TON of particles and effects on your wand because of the amount of pixel glimmers and spells you have.
 
 But fear not! There is a trick where in you can actually cast the wand even if you have 0 spells!
 Noita remembers the spell casts if you did not "refresh it" (open inventory, add / change casts), hence
