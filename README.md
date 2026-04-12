@@ -12,9 +12,13 @@ check the mod out on their [github](https://github.com/Sharpy796/GlimmersExpande
 ### Setting up python
 Install version of python that is >= 3.14 (you could try something lower but I haven't tested it on a lower version :P)
 
-It's recommended you create a virtual environment to work with python! (type `python -m venv venv` to create a virtual environment called `venv` on your current directory)
+### Virtual environment setup (Optional, but recommended)
+It's recommended you create a virtual environment to work with python! To do that you can type:
+```bash
+python -m venv venv
+```
 
-**Virtual environment setup (Optional, but recommended)**
+to create a virtual environment called `venv` on your current directory.
 
 To use the virtual environment, you have to run the specified script file to activate the virtual environment
 
@@ -55,6 +59,9 @@ as well!
 2. [Glimmers Pixelart Expansion](https://github.com/AMAIOLAMO/glimmers_pixelart_expansion) just a simple mod that adds a lot of
 color expansions to glimmer expanded mod
 
+3. [Unlimited Power](https://steamcommunity.com/sharedfiles/filedetails/?id=2102506229) to optimize the spells and remove
+the need for reducing mana :) UNLIMITED POWAHHH (aka mana)
+
 
 ## How to use
 **Basic Usage**
@@ -78,6 +85,26 @@ This command simply first reads the input image (in this case, `example_images/m
 from `firebomb_tinted_plt_exp.json`(color palette sampled from `Glimmer Expanded` Mod and `FIREBOMB` projectile), then output
 the resulting importable Component Explorer Wiki wand format in `result.txt` file under the current running directory.
 
+
+**Preview**
+
+You can preview the image by specifying a file path to generate the preview image file to, this utilizes the palette
+and creates an example of how it would generally look like in game in terms of colors.
+
+Here's an example:
+
+```bash
+python noita_pxa.py --input "example_images/mina.png" --output result.txt --palette firebomb_tinted_plt_exp.json --preview preview.png
+```
+
+as you can see, I just appended `--preview preview.png` at the end, and now the script should generate a preview image
+for you by default in the image file `preview.png`. You can open it up in an image editor to view how it looks like!
+
+
+This is how mina's preview looks like with the `firebomb_tinted_plt_exp.json` (firebomb + Glimmers Expanded Mod palette)
+![Mina preview scaled](readme_vendor/mina_preview_scaled.png)
+
+(I scaled it up for better viewing experience!)
 
 **Importing**
 
@@ -118,6 +145,13 @@ your current wand build! (actually you can use the "undo / redo" function in spe
 ![Clear Held Wand Spell lab](readme_vendor/spell_lab_clear_held_wand.png)
 
 You can now shoot without that much lag from the wand! Wohoo :)
+
+
+Another optimization you could do is to utilize the Unlimited Power mod shown above,
+and specify the `--manainf` option while running the script. Simply before running the script,
+put `--manainf` at the end of everything and the script will then assume you have enough mana to cast everything :).
+
+This should reduce the amount of `BLOOD_MAGIC` used within the wand spells!
 
 ## Have fun!
 
