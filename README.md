@@ -102,6 +102,7 @@ for you by default in the image file `preview.png`. You can open it up in an ima
 
 
 This is how mina's preview looks like with the `firebomb_tinted_plt_exp.json` (firebomb + Glimmers Expanded Mod palette)
+
 ![Mina preview scaled](readme_vendor/mina_preview_scaled.png)
 
 (I scaled it up for better viewing experience!)
@@ -113,9 +114,11 @@ Component Explorer's options
 
 
 - Open "Wiki Wands"
+
 ![CE wiki wand option](readme_vendor/ce_wiki_wands_option.png)
 
 - Then open the "Import" Tab.
+
 ![CE wiki wand import](readme_vendor/ce_wand_import_tab.png)
 
 Now you should be able to paste the result in the inputbox, and click any of the 3 bottom buttons to spawn the wand.
@@ -124,6 +127,15 @@ I personally prefer to spawn the wand in inventory with the "**put in inventory*
 ![CE wiki wand import begin](readme_vendor/ce_begin_import_wiki_wand.png)
 
 Voila~ You have the wand in game... But IT'S SUPER LAGGY... You can cast it tho now!
+
+This is how it looks like in game:
+
+![Firebomb pixelart mina](readme_vendor/firebomb_pixelart_mina.png)
+
+
+Here is the gif render(in reality it's a lil bit laggy...)
+
+![Firebomb pixelart mina gif](readme_vendor/firebomb_pixelart_mina_render.gif)
 
 
 **Reducing lag**
