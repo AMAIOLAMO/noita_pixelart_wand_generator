@@ -1,0 +1,25 @@
+[
+    [ [ 0, 0, 0       ], "COLOUR_INVIS"                                       ],
+    [ [ 255, 40, 19   ], "COLOUR_RED"                                         ],
+    [ [ 255, 97, 37   ], "COLOUR_ORANGE"                                      ],
+    [ [ 255, 173, 16  ], "COLOUR_YELLOW"                                      ],
+    [ [ 151, 255, 71  ], "COLOUR_GREEN"                                       ],
+    [ [ 55, 195, 255  ], "COLOUR_BLUE"                                        ],
+    [ [ 126, 67, 255  ], "COLOUR_PURPLE"                                      ],
+
+    [ [ 255, 255, 255 ], "GLIMMERS_EXPANDED_COLOUR_WHITE"                     ],
+    [ [ 255, 83, 244  ], "GLIMMERS_EXPANDED_COLOUR_PINK"                      ],
+    [ [ 241, 101, 171 ], "GLIMMERS_EXPANDED_COLOUR_WEIRD_FUNGUS"              ],
+    [ [ 132, 0, 0     ], "GLIMMERS_EXPANDED_COLOUR_BLOOD"                     ],
+    [ [ 255, 97, 1    ], "GLIMMERS_EXPANDED_COLOUR_FIRE"                      ],
+    [ [ 0, 238, 51    ], "GLIMMERS_EXPANDED_COLOUR_ACID"                      ],
+    [ [ 38, 198, 41   ], "GLIMMERS_EXPANDED_COLOUR_DIMINUTION"                ],
+    [ [ 70, 246, 150  ], "GLIMMERS_EXPANDED_COLOUR_TEAL"                      ],
+    [ [ 63, 79, 138   ], "GLIMMERS_EXPANDED_COLOUR_FREEZING_LIQUID"           ],
+    [ [ 86, 63, 103   ], "GLIMMERS_EXPANDED_COLOUR_OMINOUS"                   ],
+    [ [ 233, 190, 93  ], "GLIMMERS_EXPANDED_COLOUR_MIMICIUM"                  ],
+    [ [ 255, 165, 209 ], "GLIMMERS_EXPANDED_COLOUR_TRUE_RAINBOW"              ],
+    [ [ 240, 162, 1   ], "GLIMMERS_EXPANDED_COLOUR_MIDAS"                     ],
+    [ [ 163, 244, 143 ], "GLIMMERS_EXPANDED_COLOUR_LIVELY_CONCOCTION"         ],
+    [ [ 53, 187, 43   ], "GLIMMERS_EXPANDED_COLOUR_DIVINE_GROUND"             ]
+]
