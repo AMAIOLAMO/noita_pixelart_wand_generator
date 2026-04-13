@@ -94,6 +94,9 @@ This command simply first reads the input image (in this case, `example_images/m
 from `firebomb_tinted_plt_exp.json`(color palette sampled from `Glimmer Expanded` Mod and `FIREBOMB` projectile), then output
 the resulting importable Component Explorer Wiki wand format in `result.txt` file under the current running directory.
 
+**NOTE: If you want to explore all the options that there is in the script, you can run `python noita_pxa.py --help`.
+This should show you every single option that is possible!**
+
 **Preview**
 
 You can preview the image by specifying a file path to generate the preview image file to, this utilizes the palette

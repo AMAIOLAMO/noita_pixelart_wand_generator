@@ -92,7 +92,11 @@ COLOR_MATCH_MODES = {
     ),
 }
 
-arg_parser = argparse.ArgumentParser("Noita pixel art wand generator by CxRedix")
+arg_parser = argparse.ArgumentParser(
+    "Noita pixel art wand generator By CxRedix",
+    formatter_class = argparse.ArgumentDefaultsHelpFormatter,
+    allow_abbrev = False
+)
 arg_parser.add_argument(
     '-i', '--input', type=str,
     help="The input png file to start converting from, preferably lower than 128x128."
