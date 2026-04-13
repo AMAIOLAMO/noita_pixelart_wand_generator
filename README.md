@@ -4,17 +4,17 @@ A python script written to generate wands from a given image, and allows you to 
 
 
 ## Prerequisites
-~~1. Downloaded [CE[Component Explorer]](https://noita.wiki.gg/wiki/Mod:Component_Explorer) in noita.~~ ( Outdated :D )
+~~1. Download [CE[Component Explorer]](https://noita.wiki.gg/wiki/Mod:Component_Explorer) in noita.~~ ( Outdated :D )
 
 1. Download [Noita Dear Imgui](https://github.com/dextercd/Noita-Dear-ImGui) here! this is required for loading pixelart as a mod.
 
-2. Downloaded [Glimmers Expanded](https://steamcommunity.com/sharedfiles/filedetails/?id=3316355233) by Sharpy796! You can also
+2. Download [Glimmers Expanded](https://steamcommunity.com/sharedfiles/filedetails/?id=3316355233) by Sharpy796! You can also
 check the mod out on their [github](https://github.com/Sharpy796/GlimmersExpanded/)
 
 3. [CxRedix's Pixelart Expansion](https://github.com/AMAIOLAMO/cxredix_pixelart_expansion) just a simple mod that adds a lot of
 color expansions glimmers and a loader for pixelart (this can automatically clear certain lag caused by loading the wand.)
 
-4. a terminal to work with. Windows would be CMD or Powershell. Linux would be any terminal.
+4. a terminal to work with. Windows would be CMD or Powershell. Linux would be any terminal that runs any shell.
 
 ### Setting up python
 Install version of python that is >= 3.14 (you could try something lower but I haven't tested it on a lower version :P)
@@ -120,7 +120,7 @@ This is how mina's preview looks like with the `firebomb_tinted_plt_exp.json` (f
 **First make sure the CxRedix pixelart Expansion mod is below Noita Dear Imgui mod! This is important, as the wand loader only shows up
 IF the mod can load Noita Dear Imgui!**
 
-Next, go to the wand settings and go to my pixelart expansion mod, and turn on "Enable Wand Loader". When you go back to the game
+Next, go to your mod settings and go to my pixelart expansion mod, and turn on "Enable Wand Loader". When you go back to the game
 and done everything successfully, you should be able to see a wand loader window with an input field!
 
 To import the wand format, open `result.txt` and copy everything within there into your clipboard, go back to Noita then paste
