@@ -4,10 +4,17 @@ A python script written to generate wands from a given image, and allows you to 
 
 
 ## Prerequisites
-1. Downloaded [CE[Component Explorer]](https://noita.wiki.gg/wiki/Mod:Component_Explorer) in noita.
+~~1. Downloaded [CE[Component Explorer]](https://noita.wiki.gg/wiki/Mod:Component_Explorer) in noita.~~ ( Outdated :D )
+
+1. Download [Noita Dear Imgui](https://github.com/dextercd/Noita-Dear-ImGui) here! this is required for loading pixelart as a mod.
+
 2. Downloaded [Glimmers Expanded](https://steamcommunity.com/sharedfiles/filedetails/?id=3316355233) by Sharpy796! You can also
 check the mod out on their [github](https://github.com/Sharpy796/GlimmersExpanded/)
-3. a terminal to work with. Windows would be CMD or Powershell. Linux would be any terminal.
+
+3. [CxRedix's Pixelart Expansion](https://github.com/AMAIOLAMO/cxredix_pixelart_expansion) just a simple mod that adds a lot of
+color expansions glimmers and a loader for pixelart (this can automatically clear certain lag caused by loading the wand.)
+
+4. a terminal to work with. Windows would be CMD or Powershell. Linux would be any terminal.
 
 ### Setting up python
 Install version of python that is >= 3.14 (you could try something lower but I haven't tested it on a lower version :P)
@@ -56,10 +63,7 @@ to install these two libraries in your system / virtual environment (if you did 
 game tools (and can help prevent lag from wands!) by Shug, check out their [github](https://github.com/shoozzzh/Spell-Lab-Shugged)
 as well!
 
-2. [Glimmers Pixelart Expansion](https://github.com/AMAIOLAMO/glimmers_pixelart_expansion) just a simple mod that adds a lot of
-color expansions to glimmer expanded mod
-
-3. [Unlimited Power](https://steamcommunity.com/sharedfiles/filedetails/?id=2102506229) to optimize the spells and remove
+2. [Unlimited Power](https://steamcommunity.com/sharedfiles/filedetails/?id=2102506229) to optimize the spells and remove
 the need for reducing mana :) UNLIMITED POWAHHH (aka mana)
 
 
@@ -109,27 +113,23 @@ This is how mina's preview looks like with the `firebomb_tinted_plt_exp.json` (f
 
 **Importing**
 
-To import the wand format, open `result.txt` and copy everything within there into your clipboard, run Noita (of course), go to
-Component Explorer's options
+**First make sure the CxRedix pixelart Expansion mod is below Noita Dear Imgui mod! This is important, as the wand loader only shows up
+IF the mod can load Noita Dear Imgui!**
 
-WARNING: MAKE SURE YOUR INVENTORY IS NOT OPENED, or else YOU WILL CRASH BECAUSE noita's UI cannot handle
+Next, go to the wand settings and go to my pixelart expansion mod, and turn on "Enable Wand Loader". When you go back to the game
+and done everything successfully, you should be able to see a wand loader window with an input field!
+
+To import the wand format, open `result.txt` and copy everything within there into your clipboard, go back to Noita then paste
+everything into the field within "Wand Loader" window!
+
+Now you should be able to see a few buttons show up after you pasted it, let's focus on "Load on held wand and clear".
+
+As the label suggests, you have to hold a wand, any wand is fine, even the starter wand should work. Now you should be able to click
+on the button "Load on held wand and clear" then you wait :), it's going to lag... and after you can cast!
+
+WARNING: MAKE SURE YOUR INVENTORY IS NOT OPENED WHEN THIS PROCESS IS HAPPENING,
+or else YOU WILL CRASH BECAUSE noita's UI cannot handle
 that many slots :P
-
-
-- Open "Wiki Wands"
-
-![CE wiki wand option](readme_vendor/ce_wiki_wands_option.png)
-
-- Then open the "Import" Tab.
-
-![CE wiki wand import](readme_vendor/ce_wand_import_tab.png)
-
-Now you should be able to paste the result in the inputbox, and click any of the 3 bottom buttons to spawn the wand.
-I personally prefer to spawn the wand in inventory with the "**put in inventory**" option.
-
-![CE wiki wand import begin](readme_vendor/ce_begin_import_wiki_wand.png)
-
-Voila~ You have the wand in game... But IT'S SUPER LAGGY... You can cast it tho now!
 
 This is how it looks like in game:
 
@@ -143,8 +143,8 @@ Here is the gif render(in reality it's a lil bit laggy...)
 
 **Tips for better viewing experience**
 
-1. currently I have modded `FIREBOMB` projectile to be tinted white (I will probably post this somewhere), this makes the colors
-more accurate.
+1. currently I have modded `FIREBOMB` projectile to be tinted white, this makes the colors
+more accurate. You can change it in the settings for CxRedix Pixelart Expansion Mod (whether u like the OG colors or not)
 
 2. You can change the in game settings, turn ***brightness*** and ***contrast*** all the way down.
 Then turn ***gamma*** all the way up before you fire your pixelart :). This should make colors much better looking.
@@ -152,6 +152,10 @@ Then turn ***gamma*** all the way up before you fire your pixelart :). This shou
 ![Settings change](readme_vendor/settings_change.png)
 
 **Reducing lag**
+
+
+NOTE: EVERYTHING BELOW HERE IS AUTOMATICALLY DONE BY THE WAND LOADER NOW :) (I still put it here for more explanation in case
+you are curious)
 
 The biggest lag factor is actually not the wand art rendering itself, but the wand you have on your hand!
 Noita renders a TON of particles and effects on your wand because of the amount of pixel glimmers and spells you have.
