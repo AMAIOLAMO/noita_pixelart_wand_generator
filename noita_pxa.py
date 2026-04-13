@@ -51,7 +51,7 @@ def make_pixel_str(is_col_end: bool, color_spell_name: str, inf_mana: bool = Fal
     # result += "NOLLA,SUPER_TELEPORT_CAST,BURST_3,BLOOD_MAGIC,BLOOD_MAGIC,ZERO_DAMAGE,ZERO_DAMAGE," + color_spell_name + ",FIREBOMB,TRANSMUTATION,PURPLE_EXPLOSION_FIELD,SUPER_TELEPORT_CAST"
     return result
 
-def begin_column_str(inf_mana: bool = False) -> str:
+def begin_column_str(is_last_col: bool, inf_mana: bool = False) -> str:
     ## FIREBOMB
     result = ""
 
@@ -62,7 +62,11 @@ def begin_column_str(inf_mana: bool = False) -> str:
     # result += "BURST_2,NOLLA,SUPER_TELEPORT_CAST,ADD_DEATH_TRIGGER,NOLLA,GRAVITY,DIGGER"
 
     # FIREBOMB TENTACLE TIMER
-    result += "BURST_2,LIFETIME_DOWN,SPEED,SUPER_TELEPORT_CAST,ADD_DEATH_TRIGGER,DIGGER"
+    
+    if is_last_col == False:
+        result += "BURST_2,"
+
+    result += "LIFETIME_DOWN,SPEED,SUPER_TELEPORT_CAST,ADD_DEATH_TRIGGER,DIGGER"
 
     return result 
 
@@ -135,8 +139,12 @@ preview_pixels = [
 
 log_info("Constructing Spells and colors...")
 for x in range(width):
+    is_last_col = x == width - 1
+
     spell_str_io.write(",")
-    spell_str_io.write(begin_column_str(args.manainf))
+    spell_str_io.write(
+        begin_column_str(is_last_col, args.manainf)
+    )
     spell_str_io.write("\n")
 
     col_pixels = []
@@ -160,8 +168,6 @@ for x in range(width):
             match_color_pair[0].g,
             match_color_pair[0].b,
         ))
-
-    is_last_col = x == width - 1
 
     spell_str_io.write("\n")
     spell_str_io.write(end_column_str(is_last_col))
