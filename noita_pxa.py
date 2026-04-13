@@ -79,6 +79,11 @@ def end_column_str(is_last_col: bool) -> str:
 
 ### ====== CLI ====== ###
 
+IMPORT_FORMATS = {
+    'default': "default format for cxredix pixelart expansion wand loader",
+    'wiki_wand': "format for Component Explorer Wiki Wands",
+}
+
 arg_parser = argparse.ArgumentParser("Noita pixel art wand generator by CxRedix")
 arg_parser.add_argument(
     '-i', '--input', type=str,
@@ -105,6 +110,11 @@ arg_parser.add_argument(
     help="Optionally specify whether the wand should assume that it has infinite mana or not. Helps lessen the amount of spells."
 )
 
+arg_parser.add_argument(
+    '-f', '--format', type=str, default='default',
+    help="Optionally Specifies different values for output formats for importing."
+)
+
 args = arg_parser.parse_args()
 
 if args.input == None:
@@ -115,6 +125,16 @@ if args.output == None:
 
 if args.palette == None:
     arg_parser.error("--palette must be specified.")
+
+if not (args.format in IMPORT_FORMATS):
+    valid_options_str = ""
+    for opt in IMPORT_FORMATS.keys():
+        valid_options_str += f"\"{opt}\": {IMPORT_FORMATS[opt]}\n"
+
+    arg_parser.error(
+        "--format is not a valid import format(make sure you are using the correct letter cases). the valid ones are:\n"
+            + valid_options_str
+    )
 
 
 log_info("Reading palette from: " + args.palette)
@@ -188,38 +208,44 @@ if args.preview != None:
 
     log_info("Preview complete...")
 
-log_info("Creating ce import string...")
-# ce_import_str = ""
-# ce_import_str += ("""
-# {{Wand2
-# | wandPic      = Wand 0821.png\n""")
-#
-# ce_import_str += f"""
-# | capacity     = {len(spell_str_io.getvalue().split(','))}\n"""
-#
-# ce_import_str += ("""
-# | manaMax      = 100000.00
-# | manaCharge   = 100000.00
-# | spells       = """)
-#
-# ce_import_str += (spell_str_io.getvalue()) + "\n"
-#
-# ce_import_str += ("""
-# }}
-# """)
+log_info("Creating import string...")
 
-ce_import_str = spell_str_io.getvalue()
+res_import_str = ""
 
-log_info("Finished ce import string...")
+if args.format == "wiki_wand":
+    log_info("Using 'wiki_wand' format")
+    res_import_str += ("""
+    {{Wand2
+    | wandPic      = Wand 0821.png\n""")
+
+    res_import_str += f"""
+    | capacity     = {len(spell_str_io.getvalue().split(','))}\n"""
+
+    res_import_str += ("""
+    | manaMax      = 100000.00
+    | manaCharge   = 100000.00
+    | spells       = """)
+
+    res_import_str += (spell_str_io.getvalue()) + "\n"
+
+    res_import_str += ("""
+    }}
+    """)
+
+else:
+    log_info("Using 'default' format")
+    res_import_str = spell_str_io.getvalue()
+
+log_info("Finished generating import string!")
 
 if args.output == "-":
     log_info("Writing to output")
-    log_info(ce_import_str)
+    log_info(res_import_str)
 
 else:
     log_info("Writing to " + args.output)
     with open(args.output, "w") as result_file:
-       result_file.write(ce_import_str)
+       result_file.write(res_import_str)
 
 log_info("Clean up")
 spell_str_io.close()
