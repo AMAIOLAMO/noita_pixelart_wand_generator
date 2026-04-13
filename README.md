@@ -49,12 +49,17 @@ If you are using regular bash, just source the regular ol' `activate` script:
 source ./venv/bin/activate
 ```
 
-**you need to install `pillow` and `numpy` for python**
+~~**you need to install `pillow` and `numpy` for python**~~
 
-type in your terminal
+~~type in your terminal~~
+~~pip install pillow numpy~~
+
+You can now easily install all requirement by typing the following:
 ```
-pip install pillow numpy
+pip install -r requirements.txt
 ```
+
+if you are curious what packages are downloaded, you can directly open `requirements.txt` in any text editor!
 
 to install these two libraries in your system / virtual environment (if you did setup one)
 
@@ -88,7 +93,6 @@ you can switch the `firebomb_tinted_plt_exp.json` to `firebomb_tinted_plt_exp_cx
 This command simply first reads the input image (in this case, `example_images/mina.png`), then utilizing the palette given
 from `firebomb_tinted_plt_exp.json`(color palette sampled from `Glimmer Expanded` Mod and `FIREBOMB` projectile), then output
 the resulting importable Component Explorer Wiki wand format in `result.txt` file under the current running directory.
-
 
 **Preview**
 
@@ -151,11 +155,14 @@ Then turn ***gamma*** all the way up before you fire your pixelart :). This shou
 
 ![Settings change](readme_vendor/settings_change.png)
 
+3. If you are using spell lab shugged, you can shift + left click the heart icon to lock mina's HP! This can be helpful
+if you are not using the `--manainf` option, since mana is usually reduced by using `BLOOD_MAGIC`
+
 **Reducing lag**
 
 
-NOTE: EVERYTHING BELOW HERE IS AUTOMATICALLY DONE BY THE WAND LOADER NOW :) (I still put it here for more explanation in case
-you are curious)
+**NOTE: EVERYTHING BELOW HERE IS AUTOMATICALLY DONE BY THE WAND LOADER NOW :) (I still put it here for more explanation in case
+you are curious)**
 
 The biggest lag factor is actually not the wand art rendering itself, but the wand you have on your hand!
 Noita renders a TON of particles and effects on your wand because of the amount of pixel glimmers and spells you have.
@@ -181,7 +188,7 @@ Another optimization you could do is to utilize the Unlimited Power mod shown ab
 and specify the `--manainf` option while running the script. Simply before running the script,
 put `--manainf` at the end of everything and the script will then assume you have enough mana to cast everything :).
 
-This should reduce the amount of `BLOOD_MAGIC` used within the wand spells!
+This should remove all mana reducing spells (e.g. `BLOOD_MAGIC`) used within the wand spells!
 
 ## Have fun!
 

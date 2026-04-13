@@ -3,6 +3,7 @@ import numpy as np
 from io import StringIO
 import argparse
 import datetime
+import xerox
 from colori import *
 from color_palette import *
 
@@ -25,6 +26,14 @@ from color_palette import *
 def log_info(msg: str):
     ct = datetime.datetime.now()
     print(f"[{ct}][INFO] {msg}")
+
+def parse_dimension_arg(raw_str: str) -> (int, int):
+    dim_list = raw_str.split('x')
+
+    if len(dim_list) != 2:
+        raise ValueError("dimension incorrect format, expected <width>x<height>, but got " + raw_str)
+    
+    return (int(dim_list[0]), int(dim_list[1]))
 
 
 def make_pixel_str(is_col_end: bool, color_spell_name: str, inf_mana: bool = False) -> str:
@@ -119,6 +128,16 @@ arg_parser.add_argument(
     help="Optionally specifies which algorithm to use for matching colors, certain algorithms are faster and certain are slower."
 )
 
+arg_parser.add_argument(
+    '-d', '--dimensions', type=str, default='original',
+    help="Optional specifies the dimension to use, format: <width>x<height>; Example: 32x16 (i.e. 32px width, 16px height)"
+)
+
+arg_parser.add_argument(
+    '-C', '--clipboard_copy', action="store_true",
+    help="Optionally specify whether to copy the result to clipboard."
+)
+
 args = arg_parser.parse_args()
 
 if args.input == None:
@@ -150,7 +169,8 @@ if not (args.color_match_mode in COLOR_MATCH_MODES):
         f"'{args.color_match_mode}' is not a valid color matching mode (make sure you are using the correct letter cases). \
             the valid ones are:\n{valid_options_str}"
     )
-    
+
+
 
 log_info("Reading palette from: " + args.palette)
 
@@ -161,8 +181,31 @@ log_info("Palette construction complete")
 
 log_info("Reading input from: " + args.input)
 input_img = Image.open(args.input)
+iwidth, iheight = input_img.size
+
+log_info(f"Found source dimension: {iwidth}x{iheight}")
+
+owidth = iwidth
+oheight = iheight
+
+if args.dimensions != "original":
+    try:
+        owidth, oheight = parse_dimension_arg(args.dimensions)
+
+
+    except Exception as e:
+        arg_parser.error(
+            f"'{args.dimensions}' is not a valid dimension: {e}"
+        )
+
+log_info(f"Found target dimension: {owidth}x{oheight}")
+
+if iwidth != owidth or iheight != oheight:
+    log_info("Found size difference, resizing using NEAREST filtering method")
+    input_img = input_img.resize((owidth, oheight), Image.NEAREST)
+    log_info("resize complete")
+
 pixels = input_img.load()
-width, height = input_img.size
 
 spell_str_io = StringIO()
 spell_str_io.write("ACCELERATING_SHOT,LINE_ARC,LONG_DISTANCE_CAST\n")
@@ -174,8 +217,8 @@ preview_pixels = [
 
 log_info("Constructing Spells and colors...")
 log_info("using color match mode: " + args.color_match_mode)
-for x in range(width):
-    is_last_col = x == width - 1
+for x in range(owidth):
+    is_last_col = x == owidth - 1
 
     spell_str_io.write(",")
     spell_str_io.write(
@@ -185,8 +228,8 @@ for x in range(width):
 
     col_pixels = []
 
-    for y in range(height):
-        is_last_row = y == height - 1
+    for y in range(oheight):
+        is_last_row = y == oheight - 1
 
         pixel_color = Colori.from_rgba_tuple(pixels[x, y])
 
@@ -264,6 +307,13 @@ else:
     log_info("Writing to " + args.output)
     with open(args.output, "w") as result_file:
        result_file.write(res_import_str)
+
+if args.clipboard_copy == True:
+    log_info("Copying to clipboard...")
+
+    xerox.copy(res_import_str)
+
+    log_info("Clipboard copying complete!")
 
 log_info("Clean up")
 spell_str_io.close()
