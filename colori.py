@@ -5,7 +5,7 @@ from enum import Enum
 
 class ColorMatchMode(Enum):
     PERCEPTUAL_LINEAR = 1
-    DE2000 = 2
+    CIEDE2000 = 2
 
 class Colori:
     def __init__(self, r: int, g: int, b: int):
@@ -22,7 +22,7 @@ class Colori:
 
     ## the higher the more different
     def dist_to(self, other, match_mode = ColorMatchMode.PERCEPTUAL_LINEAR) -> float:
-        if match_mode == ColorMatchMode.DE2000:
+        if match_mode == ColorMatchMode.CIEDE2000:
             return ciede.ciede2000(self.to_lab(), other.to_lab())
 
         if match_mode == ColorMatchMode.PERCEPTUAL_LINEAR:

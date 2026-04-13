@@ -36,10 +36,6 @@ def make_pixel_str(is_col_end: bool, color_spell_name: str, inf_mana: bool = Fal
     if inf_mana == False:
         result += "BLOOD_MAGIC,BLOOD_MAGIC,"
 
-    ## FIREBOMB REGULAR
-    # result += "NOLLA,SUPER_TELEPORT_CAST,BURST_3,ZERO_DAMAGE,ZERO_DAMAGE," + color_spell_name + \
-    #         ",FIREBOMB,ADD_TRIGGER,CASTER_CAST,DIGGER,PURPLE_EXPLOSION_FIELD,SUPER_TELEPORT_CAST"
-
     ## FIREBOMB TENTACLE TIMER
     result += "LIFETIME_DOWN,LIFETIME_DOWN,TENTACLE_TIMER,ZERO_DAMAGE,ZERO_DAMAGE," + color_spell_name + \
             ",FIREBOMB"
@@ -47,8 +43,6 @@ def make_pixel_str(is_col_end: bool, color_spell_name: str, inf_mana: bool = Fal
     if not is_col_end:
         result += ",SPEED,SUPER_TELEPORT_CAST"
 
-    ## FIREBOMB TRANSMUTE too laggy
-    # result += "NOLLA,SUPER_TELEPORT_CAST,BURST_3,BLOOD_MAGIC,BLOOD_MAGIC,ZERO_DAMAGE,ZERO_DAMAGE," + color_spell_name + ",FIREBOMB,TRANSMUTATION,PURPLE_EXPLOSION_FIELD,SUPER_TELEPORT_CAST"
     return result
 
 def begin_column_str(is_last_col: bool, inf_mana: bool = False) -> str:
@@ -58,11 +52,7 @@ def begin_column_str(is_last_col: bool, inf_mana: bool = False) -> str:
     if inf_mana == False:
         result += "BLOOD_MAGIC,BLOOD_MAGIC,"
 
-    ## FIREBOMB REGULAR
-    # result += "BURST_2,NOLLA,SUPER_TELEPORT_CAST,ADD_DEATH_TRIGGER,NOLLA,GRAVITY,DIGGER"
-
     # FIREBOMB TENTACLE TIMER
-    
     if is_last_col == False:
         result += "BURST_2,"
 
@@ -80,19 +70,28 @@ def end_column_str(is_last_col: bool) -> str:
 ### ====== CLI ====== ###
 
 IMPORT_FORMATS = {
-    'default': "default format for cxredix pixelart expansion wand loader",
+    'default'  : "default format for cxredix pixelart expansion wand loader",
     'wiki_wand': "format for Component Explorer Wiki Wands",
+}
+
+COLOR_MATCH_MODES = {
+    'ciede2k'          : (
+        ColorMatchMode.CIEDE2000, "industrial standard for matching colors, much more accurate but slower."
+    ),
+    'perceptual_linear': (
+        ColorMatchMode.PERCEPTUAL_LINEAR, "very naive implementation for matching colors, very fast."
+    ),
 }
 
 arg_parser = argparse.ArgumentParser("Noita pixel art wand generator by CxRedix")
 arg_parser.add_argument(
     '-i', '--input', type=str,
-    help="The input png file to start converting from, preferably lower than 128x128"
+    help="The input png file to start converting from, preferably lower than 128x128."
 )
 
 arg_parser.add_argument(
     '-o', '--output', type=str,
-    help="The output text file to write the Wiki wand import to"
+    help="The output text file to write the Wiki wand import to."
 )
 
 arg_parser.add_argument(
@@ -102,7 +101,7 @@ arg_parser.add_argument(
 
 arg_parser.add_argument(
     '-P', '--preview', type=str, nargs="?",
-    help="Optional preview png file to preview the final colors"
+    help="Optional preview png file to preview the final colors."
 )
 
 arg_parser.add_argument(
@@ -113,6 +112,11 @@ arg_parser.add_argument(
 arg_parser.add_argument(
     '-f', '--format', type=str, default='default',
     help="Optionally Specifies different values for output formats for importing."
+)
+
+arg_parser.add_argument(
+    '-c', '--color_match_mode', type=str, default='ciede2k',
+    help="Optionally specifies which algorithm to use for matching colors, certain algorithms are faster and certain are slower."
 )
 
 args = arg_parser.parse_args()
@@ -132,10 +136,21 @@ if not (args.format in IMPORT_FORMATS):
         valid_options_str += f"\"{opt}\": {IMPORT_FORMATS[opt]}\n"
 
     arg_parser.error(
-        "--format is not a valid import format(make sure you are using the correct letter cases). the valid ones are:\n"
-            + valid_options_str
+        f"'{args.format}' is not a valid import format(make sure you are using the correct letter cases). \
+            the valid ones are:\n{valid_options_str}"
     )
 
+if not (args.color_match_mode in COLOR_MATCH_MODES):
+    valid_options_str = ""
+
+    for opt in COLOR_MATCH_MODES.keys():
+        valid_options_str += f"\"{opt}\": {COLOR_MATCH_MODES[opt][1]}\n"
+
+    arg_parser.error(
+        f"'{args.color_match_mode}' is not a valid color matching mode (make sure you are using the correct letter cases). \
+            the valid ones are:\n{valid_options_str}"
+    )
+    
 
 log_info("Reading palette from: " + args.palette)
 
@@ -158,6 +173,7 @@ preview_pixels = [
 ]
 
 log_info("Constructing Spells and colors...")
+log_info("using color match mode: " + args.color_match_mode)
 for x in range(width):
     is_last_col = x == width - 1
 
@@ -174,7 +190,9 @@ for x in range(width):
 
         pixel_color = Colori.from_rgba_tuple(pixels[x, y])
 
-        match_color_pair = col_palette.find_closest_match(pixel_color, ColorMatchMode.DE2000)
+        match_mode = COLOR_MATCH_MODES[args.color_match_mode][0]
+
+        match_color_pair = col_palette.find_closest_match(pixel_color, match_mode)
 
         match_color_spell_name = match_color_pair[1]
 
