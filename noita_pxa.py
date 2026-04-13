@@ -29,7 +29,7 @@ def log_info(msg: str):
 
 def make_pixel_str(is_col_end: bool, color_spell_name: str, inf_mana: bool = False) -> str:
     result = ""
-    if is_col_end == False:
+    if not is_col_end:
         result += "BURST_2,"
 
     ## FIREBOMB
@@ -42,7 +42,10 @@ def make_pixel_str(is_col_end: bool, color_spell_name: str, inf_mana: bool = Fal
 
     ## FIREBOMB TENTACLE TIMER
     result += "LIFETIME_DOWN,LIFETIME_DOWN,TENTACLE_TIMER,ZERO_DAMAGE,ZERO_DAMAGE," + color_spell_name + \
-            ",FIREBOMB,SPEED,SUPER_TELEPORT_CAST"
+            ",FIREBOMB"
+    
+    if not is_col_end:
+        result += ",SPEED,SUPER_TELEPORT_CAST"
 
     ## FIREBOMB TRANSMUTE too laggy
     # result += "NOLLA,SUPER_TELEPORT_CAST,BURST_3,BLOOD_MAGIC,BLOOD_MAGIC,ZERO_DAMAGE,ZERO_DAMAGE," + color_spell_name + ",FIREBOMB,TRANSMUTATION,PURPLE_EXPLOSION_FIELD,SUPER_TELEPORT_CAST"
@@ -59,9 +62,16 @@ def begin_column_str(inf_mana: bool = False) -> str:
     # result += "BURST_2,NOLLA,SUPER_TELEPORT_CAST,ADD_DEATH_TRIGGER,NOLLA,GRAVITY,DIGGER"
 
     # FIREBOMB TENTACLE TIMER
-    result += "BURST_2,LIFETIME_DOWN,SUPER_TELEPORT_CAST,ADD_DEATH_TRIGGER,DIGGER"
+    result += "BURST_2,LIFETIME_DOWN,SPEED,SUPER_TELEPORT_CAST,ADD_DEATH_TRIGGER,DIGGER"
 
     return result 
+
+def end_column_str(is_last_col: bool) -> str:
+    if is_last_col:
+        return ""
+    # else
+
+    return ",SUPER_TELEPORT_CAST"
 
 ### ====== CLI ====== ###
 
@@ -132,7 +142,7 @@ for x in range(width):
     col_pixels = []
 
     for y in range(height):
-        is_end = y == height - 1
+        is_last_row = y == height - 1
 
         pixel_color = Colori.from_rgba_tuple(pixels[x, y])
 
@@ -141,7 +151,9 @@ for x in range(width):
         match_color_spell_name = match_color_pair[1]
 
         spell_str_io.write(",")
-        spell_str_io.write(make_pixel_str(is_end, match_color_spell_name, args.manainf))
+        spell_str_io.write(
+            make_pixel_str(is_last_row, match_color_spell_name, args.manainf)
+        )
 
         col_pixels.append((
             match_color_pair[0].r,
@@ -149,10 +161,12 @@ for x in range(width):
             match_color_pair[0].b,
         ))
 
+    is_last_col = x == width - 1
+
+    spell_str_io.write("\n")
+    spell_str_io.write(end_column_str(is_last_col))
 
     preview_pixels.append(col_pixels)
-    
-    spell_str_io.write("\n")
 
 log_info("Render Complete")
 
@@ -169,24 +183,26 @@ if args.preview != None:
     log_info("Preview complete...")
 
 log_info("Creating ce import string...")
-ce_import_str = ""
-ce_import_str += ("""
-{{Wand2
-| wandPic      = Wand 0821.png\n""")
+# ce_import_str = ""
+# ce_import_str += ("""
+# {{Wand2
+# | wandPic      = Wand 0821.png\n""")
+#
+# ce_import_str += f"""
+# | capacity     = {len(spell_str_io.getvalue().split(','))}\n"""
+#
+# ce_import_str += ("""
+# | manaMax      = 100000.00
+# | manaCharge   = 100000.00
+# | spells       = """)
+#
+# ce_import_str += (spell_str_io.getvalue()) + "\n"
+#
+# ce_import_str += ("""
+# }}
+# """)
 
-ce_import_str += f"""
-| capacity     = {len(spell_str_io.getvalue().split(','))}\n"""
-
-ce_import_str += ("""
-| manaMax      = 100000.00
-| manaCharge   = 100000.00
-| spells       = """)
-
-ce_import_str += (spell_str_io.getvalue()) + "\n"
-
-ce_import_str += ("""
-}}
-""")
+ce_import_str = spell_str_io.getvalue()
 
 log_info("Finished ce import string...")
 
