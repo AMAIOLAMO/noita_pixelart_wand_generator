@@ -4,8 +4,22 @@ from io import StringIO
 import argparse
 import datetime
 import xerox
+import time
+
 from colori import *
 from color_palette import *
+
+def clampi(value: int, a: int, b: int) -> int:
+    return min(
+        max(value, a), b
+    )
+
+def saturate_255(color: Colori) -> Colori:
+    return Colori(
+        clampi(color.r, 0, 255),
+        clampi(color.g, 0, 255),
+        clampi(color.b, 0, 255)
+    )
 
 
 ## TODO:
@@ -219,8 +233,14 @@ spell_count = 0
 preview_pixels = [
 ]
 
+render_time_begin = time.time()
 log_info("Constructing Spells and colors...")
 log_info("using color match mode: " + args.color_match_mode)
+
+bayer_mat2_2 = list(map(lambda x: x / 4 - 0.5, [
+    0, 2, 3, 1
+]))
+
 for x in range(owidth):
     is_last_col = x == owidth - 1
 
@@ -238,6 +258,18 @@ for x in range(owidth):
         pixel_color = Colori.from_rgba_tuple(pixels[x, y])
 
         match_mode = COLOR_MATCH_MODES[args.color_match_mode][0]
+
+        bayer_mat_pos = [
+            x % 2, y % 2
+        ]
+
+        mat_val_mapped = bayer_mat2_2[bayer_mat_pos[1] * 2 + bayer_mat_pos[0]] * 35
+
+        pixel_color.r = pixel_color.r + mat_val_mapped
+        pixel_color.g = pixel_color.g + mat_val_mapped
+        pixel_color.b = pixel_color.b + mat_val_mapped
+
+        pixel_color = saturate_255(pixel_color)
 
         match_color_pair = col_palette.find_closest_match(pixel_color, match_mode)
 
@@ -259,7 +291,8 @@ for x in range(owidth):
 
     preview_pixels.append(col_pixels)
 
-log_info("Render Complete")
+render_time_total_secs = time.time() - render_time_begin
+log_info(f"Render Complete, took {render_time_total_secs} seconds")
 
 if args.preview != None:
     log_info("Creating preview...")
