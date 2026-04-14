@@ -156,6 +156,11 @@ arg_parser.add_argument(
     help="Optionally specify whether to copy the result to clipboard."
 )
 
+arg_parser.add_argument(
+    '-D', '--dither', action="store_true",
+    help="Optionally specify whether to utilize dithering, bayer matrix available for now."
+)
+
 args = arg_parser.parse_args()
 
 if args.input == None:
@@ -259,17 +264,18 @@ for x in range(owidth):
 
         match_mode = COLOR_MATCH_MODES[args.color_match_mode][0]
 
-        bayer_mat_pos = [
-            x % 2, y % 2
-        ]
+        if args.dither:
+            bayer_mat_pos = [
+                x % 2, y % 2
+            ]
 
-        mat_val_mapped = bayer_mat2_2[bayer_mat_pos[1] * 2 + bayer_mat_pos[0]] * 35
+            mat_val_mapped = bayer_mat2_2[bayer_mat_pos[1] * 2 + bayer_mat_pos[0]] * 35
 
-        pixel_color.r = pixel_color.r + mat_val_mapped
-        pixel_color.g = pixel_color.g + mat_val_mapped
-        pixel_color.b = pixel_color.b + mat_val_mapped
+            pixel_color.r = pixel_color.r + mat_val_mapped
+            pixel_color.g = pixel_color.g + mat_val_mapped
+            pixel_color.b = pixel_color.b + mat_val_mapped
 
-        pixel_color = saturate_255(pixel_color)
+            pixel_color = saturate_255(pixel_color)
 
         match_color_pair = col_palette.find_closest_match(pixel_color, match_mode)
 
