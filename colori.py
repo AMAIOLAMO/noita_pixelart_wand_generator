@@ -3,6 +3,11 @@ import colorsys as colsys
 import ciede2000 as ciede
 from enum import Enum
 
+def clampi(value: int, a: int, b: int) -> int:
+    return min(
+        max(value, a), b
+    )
+
 class ColorMatchMode(Enum):
     PERCEPTUAL_LINEAR = 1
     CIEDE2000 = 2
@@ -19,6 +24,15 @@ class Colori:
         return Colori(
             r, g, b
         )
+
+    ## saturates the current class
+    def saturated(self) -> "Colori":
+        return Colori(
+            clampi(self.r, 0, 255),
+            clampi(self.g, 0, 255),
+            clampi(self.b, 0, 255)
+        )
+
 
     ## the higher the more different
     def dist_to(self, other, match_mode = ColorMatchMode.PERCEPTUAL_LINEAR) -> float:

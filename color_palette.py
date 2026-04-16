@@ -19,16 +19,28 @@ class Palette:
 
         return new_palette
 
-    def find_closest_match(self, color: Colori, match_mode: ColorMatchMode) -> (Colori, str):
-        dist = self.color_pairs[0][0].dist_to(color)
+    def find_closest_match(self, color: Colori, match_mode: ColorMatchMode, dist_tolerance: float = 0.5) -> (Colori, str):
+        best_dist = self.color_pairs[0][0].dist_to(color)
         best_pair = self.color_pairs[0]
 
-        # yes the first element being done multiple times but I dont care
+        # yes the first element being done two times but it doesnt matter :)
         for color_pair in self.color_pairs:
+
+            # speed up using tolerance
+            if best_dist < dist_tolerance:
+                return best_pair
+
+
+            # TODO: can be sped up utilizing a faster LAB calculation
+            # approx_dist = color_pair[0].dist_to(color, ColorMatchMode.PERCEPTUAL_LINEAR)
+            #
+            # if approx_dist > best_dist:
+            #     continue
+
             new_dist = color_pair[0].dist_to(color, match_mode)
 
-            if new_dist < dist:
-                dist = new_dist
+            if new_dist < best_dist:
+                best_dist = new_dist
                 best_pair = color_pair
 
         return best_pair

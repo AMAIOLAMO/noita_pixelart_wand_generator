@@ -6,28 +6,16 @@ import datetime
 import xerox
 import time
 
-from colori import *
-from color_palette import *
+from profile_timer import ProfileTimer
 
-def clampi(value: int, a: int, b: int) -> int:
-    return min(
-        max(value, a), b
-    )
-
-def saturate_255(color: Colori) -> Colori:
-    return Colori(
-        clampi(color.r, 0, 255),
-        clampi(color.g, 0, 255),
-        clampi(color.b, 0, 255)
-    )
+from colori import Colori, ColorMatchMode
+from color_palette import Palette
 
 
 ## TODO:
 ## 1. Create a GUI that helps display, switch on and off certain settings
 ## 2. Allow switching between without using (Modifying directly Spell lab shugged player.xml) and with using CE
 ## 3. Additive Color merging, specifically for colors that are hard to represent (aka the smallest value CIEDE2k is > 5 or smth like that)
-## 4. Add Optional Dithering to the mix (Bayer matrix)
-## 5. Allow users to specify different size scaling of the original image (maybe compression?)
 
 
 ## This script assumes a few things:
@@ -36,6 +24,10 @@ def saturate_255(color: Colori) -> Colori:
 ## 3. finally, you simply need to run: python noita_pxa.py --input "input_file" --output "output_file" and you have your wand!
 ## 4. you can import this through  Component Explorer's "Wiki Wands" > "import" tab paste and you are good to go
 ## 5. you can optionally show a preview image by using the --preview "preview_file" path
+
+str_render_ptimer = ProfileTimer()
+pixel_match_render_ptimer = ProfileTimer()
+palette_match_ptimer = ProfileTimer()
 
 def log_info(msg: str):
     ct = datetime.datetime.now()
@@ -163,13 +155,13 @@ arg_parser.add_argument(
 
 args = arg_parser.parse_args()
 
-if args.input == None:
+if args.input is None:
     arg_parser.error("--input must be specified.")
 
-if args.output == None:
+if args.output is None:
     arg_parser.error("--output must be specified.")
 
-if args.palette == None:
+if args.palette is None:
     arg_parser.error("--palette must be specified.")
 
 if not (args.format in IMPORT_FORMATS):
@@ -192,7 +184,6 @@ if not (args.color_match_mode in COLOR_MATCH_MODES):
         f"'{args.color_match_mode}' is not a valid color matching mode (make sure you are using the correct letter cases). \
             the valid ones are:\n{valid_options_str}"
     )
-
 
 
 log_info("Reading palette from: " + args.palette)
@@ -230,13 +221,6 @@ if iwidth != owidth or iheight != oheight:
 
 pixels = input_img.load()
 
-spell_str_io = StringIO()
-spell_str_io.write("ACCELERATING_SHOT,LINE_ARC,LONG_DISTANCE_CAST\n")
-
-spell_count = 0
-
-preview_pixels = [
-]
 
 render_time_begin = time.time()
 log_info("Constructing Spells and colors...")
@@ -246,8 +230,58 @@ bayer_mat2_2 = list(map(lambda x: x / 4 - 0.5, [
     0, 2, 3, 1
 ]))
 
+rendered_color_pairs = [None] * owidth * oheight
+
+def render_pixel(x, y, width, height):
+    pixel_color = Colori.from_rgba_tuple(pixels[x, y])
+
+    match_mode = COLOR_MATCH_MODES[args.color_match_mode][0]
+
+    if args.dither:
+        bayer_mat_pos = [
+            x % 2, y % 2
+        ]
+
+        mat_val_mapped = bayer_mat2_2[bayer_mat_pos[1] * 2 + bayer_mat_pos[0]] * 35
+
+        pixel_color.r = pixel_color.r + mat_val_mapped
+        pixel_color.g = pixel_color.g + mat_val_mapped
+        pixel_color.b = pixel_color.b + mat_val_mapped
+
+        pixel_color = pixel_color.saturated()
+
+        palette_match_ptimer.begin_append()
+        color_pair_match = col_palette.find_closest_match(pixel_color, match_mode)
+        palette_match_ptimer.end_append()
+
+        rendered_color_pairs[y * width + x] = color_pair_match
+
+
+## render color pairs
+pixel_match_render_ptimer.begin_append()
+
+for y in range(oheight):
+    for x in range(owidth):
+        render_pixel(x, y, owidth, oheight)
+
+pixel_match_render_ptimer.end_append()
+
+
+
+## process color pairs
+
+spell_str_io = StringIO()
+spell_str_io.write("ACCELERATING_SHOT,LINE_ARC,LONG_DISTANCE_CAST\n")
+
+spell_count = 0
+
+preview_pixels = [
+]
+
 for x in range(owidth):
     is_last_col = x == owidth - 1
+
+    str_render_ptimer.begin_append()
 
     spell_str_io.write(",")
     spell_str_io.write(
@@ -255,52 +289,58 @@ for x in range(owidth):
     )
     spell_str_io.write("\n")
 
+    str_render_ptimer.end_append()
+
     col_pixels = []
 
     for y in range(oheight):
         is_last_row = y == oheight - 1
 
-        pixel_color = Colori.from_rgba_tuple(pixels[x, y])
+        color_pair_match = rendered_color_pairs[y * owidth + x]
 
-        match_mode = COLOR_MATCH_MODES[args.color_match_mode][0]
+        match_color_spell_name = color_pair_match[1]
 
-        if args.dither:
-            bayer_mat_pos = [
-                x % 2, y % 2
-            ]
-
-            mat_val_mapped = bayer_mat2_2[bayer_mat_pos[1] * 2 + bayer_mat_pos[0]] * 35
-
-            pixel_color.r = pixel_color.r + mat_val_mapped
-            pixel_color.g = pixel_color.g + mat_val_mapped
-            pixel_color.b = pixel_color.b + mat_val_mapped
-
-            pixel_color = saturate_255(pixel_color)
-
-        match_color_pair = col_palette.find_closest_match(pixel_color, match_mode)
-
-        match_color_spell_name = match_color_pair[1]
+        str_render_ptimer.begin_append()
 
         spell_str_io.write(",")
         spell_str_io.write(
             make_pixel_str(is_last_row, match_color_spell_name, args.manainf)
         )
 
+        str_render_ptimer.end_append()
+
         col_pixels.append((
-            match_color_pair[0].r,
-            match_color_pair[0].g,
-            match_color_pair[0].b,
+            color_pair_match[0].r,
+            color_pair_match[0].g,
+            color_pair_match[0].b,
         ))
+        pass
+
+    str_render_ptimer.begin_append()
 
     spell_str_io.write("\n")
     spell_str_io.write(end_column_str(is_last_col))
 
+    str_render_ptimer.end_append()
+
     preview_pixels.append(col_pixels)
+
 
 render_time_total_secs = time.time() - render_time_begin
 log_info(f"Render Complete, took {render_time_total_secs} seconds")
 
-if args.preview != None:
+# TODO: probably can simplify this, by just grouping all of them together and forloop
+# but for now this should suffice
+log_info(f"-- string rendering took {str_render_ptimer.get_total_seconds()} seconds, \
+    {str_render_ptimer.get_total_seconds() / render_time_total_secs * 100}%")
+
+log_info(f"-- pixel match rendering took {pixel_match_render_ptimer.get_total_seconds()} seconds, \
+    {pixel_match_render_ptimer.get_total_seconds() / render_time_total_secs * 100}%")
+
+log_info(f"-- palette match rendering took {palette_match_ptimer.get_total_seconds()} seconds, \
+    {palette_match_ptimer.get_total_seconds() / render_time_total_secs * 100}%")
+
+if args.preview is not None:
     log_info("Creating preview...")
     preview_pixels_array = np.array(preview_pixels, dtype=np.uint8)
     preview_img = Image.fromarray(preview_pixels_array)
