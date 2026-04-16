@@ -129,14 +129,18 @@ and done everything successfully, you should be able to see a wand loader window
 To import the wand format, open `result.txt` and copy everything within there into your clipboard, go back to Noita then paste
 everything into the field within "Wand Loader" window!
 
-Now you should be able to see a few buttons show up after you pasted it, let's focus on "Load on held wand and clear".
+~~Now you should be able to see a few buttons show up after you pasted it, let's focus on "on held wand and clear".~~
 
-As the label suggests, you have to hold a wand, any wand is fine, even the starter wand should work. Now you should be able to click
-on the button "Load on held wand and clear" then you wait :), it's going to lag... and after you can cast!
+~~As the label suggests, you have to hold a wand, any wand is fine, even the starter wand should work. Now you should be able to click
+on the button "Load on held wand and clear" then you wait :), it's going to lag... and after you can cast!~~
 
-WARNING: MAKE SURE YOUR INVENTORY IS NOT OPENED WHEN THIS PROCESS IS HAPPENING,
+~~WARNING: MAKE SURE YOUR INVENTORY IS NOT OPENED WHEN THIS PROCESS IS HAPPENING,
 or else YOU WILL CRASH BECAUSE noita's UI cannot handle
-that many slots :P
+that many slots :P~~
+
+The above method is now obsolete, you can now load wands very quickly by holding a wand you wished to load the spells into,
+the click on "Direct Sync to wand". This will bypass Noita's indirect loading of spells through entities, and just modify what actually
+matters :)
 
 This is how it looks like in game:
 

@@ -14,16 +14,7 @@ from color_palette import Palette
 
 ## TODO:
 ## 1. Create a GUI that helps display, switch on and off certain settings
-## 2. Allow switching between without using (Modifying directly Spell lab shugged player.xml) and with using CE
-## 3. Additive Color merging, specifically for colors that are hard to represent (aka the smallest value CIEDE2k is > 5 or smth like that)
-
-
-## This script assumes a few things:
-## 1. You are using CE(Component Explorer)'s wiki wands to import the wands (https://noita.wiki.gg/wiki/Mod:Component_Explorer)
-## 2. you need to install pillow and numpy for python (`pip install pillow numpy`) preferably in a virtual environment :P
-## 3. finally, you simply need to run: python noita_pxa.py --input "input_file" --output "output_file" and you have your wand!
-## 4. you can import this through  Component Explorer's "Wiki Wands" > "import" tab paste and you are good to go
-## 5. you can optionally show a preview image by using the --preview "preview_file" path
+## 2. Additive Color merging, specifically for colors that are hard to represent (aka the smallest value CIEDE2k is > 5 or smth like that)
 
 str_render_ptimer = ProfileTimer()
 pixel_match_render_ptimer = ProfileTimer()
@@ -232,7 +223,7 @@ bayer_mat2_2 = list(map(lambda x: x / 4 - 0.5, [
 
 rendered_color_pairs = [None] * owidth * oheight
 
-def render_pixel(x, y, width, height):
+def render_pixel(x: int, y: int) -> (Colori, str):
     pixel_color = Colori.from_rgba_tuple(pixels[x, y])
 
     match_mode = COLOR_MATCH_MODES[args.color_match_mode][0]
@@ -250,23 +241,46 @@ def render_pixel(x, y, width, height):
 
         pixel_color = pixel_color.saturated()
 
-        palette_match_ptimer.begin_append()
-        color_pair_match = col_palette.find_closest_match(pixel_color, match_mode)
-        palette_match_ptimer.end_append()
+    palette_match_ptimer.begin_append()
+    result_match = col_palette.find_closest_match(pixel_color, match_mode)
+    palette_match_ptimer.end_append()
 
-        rendered_color_pairs[y * width + x] = color_pair_match
+    return result_match
 
+# sx sy refer to top left (min), ex ey refer to bottom right (max)
+def render_pixel_rect_to(sx, sy, ex, ey, img_width, img_height, dest):
+    # + 1 due to exclusivity of range maximum
+    for y in range(sy, ey + 1):
+        for x in range(sx, ex + 1):
+            dest[y * img_width + x] = render_pixel(x, y)
 
 ## render color pairs
 pixel_match_render_ptimer.begin_append()
 
-for y in range(oheight):
-    for x in range(owidth):
-        render_pixel(x, y, owidth, oheight)
+DEFAULT_STRIP_COUNT = 5
+
+strip_height = int(oheight / DEFAULT_STRIP_COUNT)
+
+# the remaining last strip's height
+rem_strip_height = oheight - (strip_height * DEFAULT_STRIP_COUNT)
+
+## threading is not efficient in python
+## Process worker may be an option here
+for ti in range(DEFAULT_STRIP_COUNT):
+    sy = ti * strip_height
+    ey = (ti + 1) * strip_height - 1
+
+    # we append the last strip height if there is any
+    if ti == DEFAULT_STRIP_COUNT - 1:
+        ey += rem_strip_height
+
+    render_pixel_rect_to(
+        0, sy,
+        owidth - 1, ey,
+        owidth, oheight, rendered_color_pairs
+    )
 
 pixel_match_render_ptimer.end_append()
-
-
 
 ## process color pairs
 
