@@ -8,8 +8,10 @@ import time
 
 from profile_timer import ProfileTimer
 
+from typing import *
+
 from colori import Colori, ColorMatchMode
-from color_palette import Palette
+from color_palette import Palette, ColorMatch
 
 
 ## TODO:
@@ -221,14 +223,21 @@ bayer_mat2_2 = list(map(lambda x: x / 4 - 0.5, [
     0, 2, 3, 1
 ]))
 
-rendered_color_pairs = [None] * owidth * oheight
+rendered_color_matches = [None] * owidth * oheight
 
-def render_pixel(x: int, y: int) -> (Colori, str):
+# checks whether or not a point is within a rect (assumed to 0, 0 top left)
+def in_rect(x: int, y: int, width: int, height: int) -> bool:
+    return not (x < 0 or x >= width or y < 0 or y >= height)
+
+pixel_error = [0] * owidth * oheight
+
+def render_pixel(x: int, y: int) -> ColorMatch:
     pixel_color = Colori.from_rgba_tuple(pixels[x, y])
 
     match_mode = COLOR_MATCH_MODES[args.color_match_mode][0]
 
     if args.dither:
+        # bayer matrix
         bayer_mat_pos = [
             x % 2, y % 2
         ]
@@ -241,6 +250,13 @@ def render_pixel(x: int, y: int) -> (Colori, str):
 
         pixel_color = pixel_color.saturated()
 
+        # flyoid-steinberg
+        # palette_match_ptimer.begin_append()
+        # result_match = col_palette.find_closest_match(pixel_color, match_mode)
+        # palette_match_ptimer.end_append()
+        #
+        # error := pixel_color - result_match
+        
     palette_match_ptimer.begin_append()
     result_match = col_palette.find_closest_match(pixel_color, match_mode)
     palette_match_ptimer.end_append()
@@ -248,7 +264,7 @@ def render_pixel(x: int, y: int) -> (Colori, str):
     return result_match
 
 # sx sy refer to top left (min), ex ey refer to bottom right (max)
-def render_pixel_rect_to(sx, sy, ex, ey, img_width, img_height, dest):
+def render_pixel_rect_to(sx: int, sy: int, ex: int, ey: int, img_width: int, img_height: int, dest):
     # + 1 due to exclusivity of range maximum
     for y in range(sy, ey + 1):
         for x in range(sx, ex + 1):
@@ -277,7 +293,7 @@ for ti in range(DEFAULT_STRIP_COUNT):
     render_pixel_rect_to(
         0, sy,
         owidth - 1, ey,
-        owidth, oheight, rendered_color_pairs
+        owidth, oheight, rendered_color_matches
     )
 
 pixel_match_render_ptimer.end_append()
@@ -310,9 +326,9 @@ for x in range(owidth):
     for y in range(oheight):
         is_last_row = y == oheight - 1
 
-        color_pair_match = rendered_color_pairs[y * owidth + x]
+        color_pair_match: ColorMatch = rendered_color_matches[y * owidth + x]
 
-        match_color_spell_name = color_pair_match[1]
+        match_color_spell_name = color_pair_match.get_action()
 
         str_render_ptimer.begin_append()
 
@@ -323,11 +339,9 @@ for x in range(owidth):
 
         str_render_ptimer.end_append()
 
-        col_pixels.append((
-            color_pair_match[0].r,
-            color_pair_match[0].g,
-            color_pair_match[0].b,
-        ))
+        match_color = color_pair_match.get_color()
+
+        col_pixels.append(match_color.to_tuple())
         pass
 
     str_render_ptimer.begin_append()
@@ -405,7 +419,7 @@ else:
     with open(args.output, "w") as result_file:
        result_file.write(res_import_str)
 
-if args.clipboard_copy == True:
+if args.clipboard_copy is True:
     log_info("Copying to clipboard...")
 
     xerox.copy(res_import_str)

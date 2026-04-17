@@ -1,6 +1,21 @@
 from colori import *
 import json
 
+class ColorMatch:
+    def __init__(self, color: Colori, action_str: str, dist: float):
+        self.color = color
+        self.action_str = action_str
+        self.dist = dist
+
+    def get_action(self) -> str:
+        return self.action_str
+
+    def get_color(self) -> Colori:
+        return self.color
+
+    def get_dist(self) -> float:
+        return self.dist
+
 class Palette:
     @staticmethod
     def from_file(file_path: str) -> Palette:
@@ -19,7 +34,7 @@ class Palette:
 
         return new_palette
 
-    def find_closest_match(self, color: Colori, match_mode: ColorMatchMode, dist_tolerance: float = 0.5) -> (Colori, str):
+    def find_closest_match(self, color: Colori, match_mode: ColorMatchMode, dist_tolerance: float = 0.5) -> ColorMatch:
         best_dist = self.color_pairs[0][0].dist_to(color)
         best_pair = self.color_pairs[0]
 
@@ -28,8 +43,7 @@ class Palette:
 
             # speed up using tolerance
             if best_dist < dist_tolerance:
-                return best_pair
-
+                break
 
             # TODO: can be sped up utilizing a faster LAB calculation
             # approx_dist = color_pair[0].dist_to(color, ColorMatchMode.PERCEPTUAL_LINEAR)
@@ -43,7 +57,9 @@ class Palette:
                 best_dist = new_dist
                 best_pair = color_pair
 
-        return best_pair
+        return ColorMatch(
+            best_pair[0], best_pair[1], best_dist
+        )
 
 
     color_pairs = []
