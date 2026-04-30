@@ -229,7 +229,28 @@ rendered_color_matches = [None] * owidth * oheight
 def in_rect(x: int, y: int, width: int, height: int) -> bool:
     return not (x < 0 or x >= width or y < 0 or y >= height)
 
-pixel_error = [0] * owidth * oheight
+pixel_errors = [(0, 0, 0)] * owidth * oheight
+
+def flatten_2d(x: int, y: int, width: int) -> int:
+    return y * width + x
+
+# def try_add_error_at(x: int, y: int, width: int, height: int, error: (float, float, float), mult: float, px_errors) -> bool:
+#     if in_rect(x, y, width, height):
+#         dr, dg, db = error
+#
+#         or, og, ob = px_errors[flatten_2d(x, y, width)]
+#
+#         or += dr
+#         og += dg
+#         ob += db
+#
+#         px_errors[flatten_2d(x, y, width)] = (or, og, ob)
+#
+#         return True
+#     # else
+#
+#     return False
+
 
 def render_pixel(x: int, y: int) -> ColorMatch:
     pixel_color = Colori.from_rgba_tuple(pixels[x, y])
@@ -252,10 +273,29 @@ def render_pixel(x: int, y: int) -> ColorMatch:
 
         # flyoid-steinberg
         # palette_match_ptimer.begin_append()
-        # result_match = col_palette.find_closest_match(pixel_color, match_mode)
+        # corrected_color = pixel_color
+        #
+        # prev_error = pixel_errors[flatten_2d(x, y, owidth)]
+        #
+        # corrected_color.r += prev_error.r
+        # corrected_color.g += prev_error.g
+        # corrected_color.b += prev_error.b
+        #
+        # result_match = col_palette.find_closest_match(corrected_color.saturated(), match_mode)
         # palette_match_ptimer.end_append()
         #
-        # error := pixel_color - result_match
+        # new_error = pixel_color.get_channel_linear_dist_to(
+        #     result_match.get_color()
+        # )
+        #
+        # try_add_error_at(x + 1, y,     owidth, oheight, new_error * (7.0 / 16.0), pixel_errors)
+        # try_add_error_at(x - 1, y + 1, owidth, oheight, new_error * (3.0 / 16.0), pixel_errors)
+        # try_add_error_at(x,     y + 1, owidth, oheight, new_error * (5.0 / 16.0), pixel_errors)
+        # try_add_error_at(x + 1, y + 1, owidth, oheight, new_error * (1.0 / 16.0), pixel_errors)
+        
+        
+        
+        
         
     palette_match_ptimer.begin_append()
     result_match = col_palette.find_closest_match(pixel_color, match_mode)

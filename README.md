@@ -8,13 +8,19 @@ A python script written to generate wands from a given image, and allows you to 
 
 1. Download [Noita Dear Imgui](https://github.com/dextercd/Noita-Dear-ImGui) here! this is required for loading pixelart as a mod.
 
-2. Download [Glimmers Expanded](https://steamcommunity.com/sharedfiles/filedetails/?id=3316355233) by Sharpy796! You can also
+2. Download [CxRedix's Wand Box](https://github.com/AMAIOLAMO/cxredix_wand_box) here! this is required for loading the wand strings
+within the game (especially for big wands!)
+
+3. a terminal to work with. Windows would be CMD or Powershell. Linux would be any terminal that runs any shell.
+
+### OPTIONAL DEPENDENCIES(RECOMMENDED FOR MORE COLORS)
+
+1. Download [Glimmers Expanded](https://steamcommunity.com/sharedfiles/filedetails/?id=3316355233) by Sharpy796! You can also
 check the mod out on their [github](https://github.com/Sharpy796/GlimmersExpanded/)
 
-3. [CxRedix's Pixelart Expansion](https://github.com/AMAIOLAMO/cxredix_pixelart_expansion) just a simple mod that adds a lot of
-color expansions glimmers and a loader for pixelart (this can automatically clear certain lag caused by loading the wand.)
+2. [CxRedix's Pixelart Expansion](https://github.com/AMAIOLAMO/cxredix_pixelart_expansion) just a simple mod that adds a lot of
+color expansions glimmers on top of **Glimmers Expanded**! (If you wanna download this, Glimmers Expanded is REQUIRED)
 
-4. a terminal to work with. Windows would be CMD or Powershell. Linux would be any terminal that runs any shell.
 
 ### Setting up python
 Install version of python that is >= 3.14 (you could try something lower but I haven't tested it on a lower version :P)
@@ -84,14 +90,17 @@ I have supplied certain example images in the `example_images` directory, we can
 
 If you run:
 ```bash
-python noita_pxa.py --input "example_images/mina.png" --output result.txt --palette firebomb_tinted_plt_exp.json
+python noita_pxa.py --input "example_images/mina.png" --output result.txt --palette firebomb_tinted_plt.json
 ```
 
-If you have my extended mod palette(Glimmers Pixelart Expansion),
-you can switch the `firebomb_tinted_plt_exp.json` to `firebomb_tinted_plt_exp_cx.json` for a wider range of colors!
+If you have Sharpy796's extended glimmers mod(Glimmers Expanded),
+you can switch the `firebomb_tinted_plt.json` to `firebomb_tinted_plt_exp.json` for a wider range of colors!
+
+If you have CxRedix's extended glimmers palette mod(CxRedix's Pixelart Expansion),
+you can switch the `firebomb_tinted_plt.json` to `firebomb_tinted_plt_exp_cx.json` for a REALLY wide range of colors :)
 
 This command simply first reads the input image (in this case, `example_images/mina.png`), then utilizing the palette given
-from `firebomb_tinted_plt_exp.json`(color palette sampled from `Glimmer Expanded` Mod and `FIREBOMB` projectile), then output
+from `firebomb_tinted_plt.json`(color palette sampled from original Noita glimmers and `FIREBOMB` projectile), then output
 the resulting importable Component Explorer Wiki wand format in `result.txt` file under the current running directory.
 
 **NOTE: If you want to explore all the options that there is in the script, you can run `python noita_pxa.py --help`.
@@ -105,7 +114,7 @@ and creates an example of how it would generally look like in game in terms of c
 Here's an example:
 
 ```bash
-python noita_pxa.py --input "example_images/mina.png" --output result.txt --palette firebomb_tinted_plt_exp.json --preview preview.png
+python noita_pxa.py --input "example_images/mina.png" --output result.txt --palette firebomb_tinted_plt.json --preview preview.png
 ```
 
 as you can see, I just appended `--preview preview.png` at the end, and now the script should generate a preview image

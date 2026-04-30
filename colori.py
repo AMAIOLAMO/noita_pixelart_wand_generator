@@ -1,6 +1,7 @@
 import math_utils as umath
 import colorsys as colsys
 import ciede2000 as ciede
+import math
 from enum import Enum
 
 def clampi(value: int, a: int, b: int) -> int:
@@ -10,7 +11,7 @@ def clampi(value: int, a: int, b: int) -> int:
 
 class ColorMatchMode(Enum):
     PERCEPTUAL_LINEAR = 1
-    CIEDE2000 = 2
+    CIEDE2000 = 2,
 
 class Colori:
     def __init__(self, r: int, g: int, b: int):
@@ -32,6 +33,14 @@ class Colori:
             clampi(self.g, 0, 255),
             clampi(self.b, 0, 255)
         )
+
+    def get_channel_linear_dist_to(self, other) -> (float, float, float):
+        dr = self.r - other.r
+        dg = self.g - other.g
+        db = self.b - other.b
+
+        return (dr, dg, db)
+
 
 
     ## the higher the more different
